@@ -1,7 +1,7 @@
 ﻿using Microsoft.Extensions.Options;
 using MongoDB.Driver;
 using UserAuthService.Models;
-namespace UserRoleAPI.DbContext
+namespace UserAuthService.DbContext
 {
     public class MongoDbContext
     {

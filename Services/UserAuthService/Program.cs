@@ -1,9 +1,8 @@
-using AspNetCore.Identity.MongoDbCore.Infrastructure;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.IdentityModel.Tokens;
-using MongoDbGenericRepository;
 using System.Text;
+using UserAuthService.DbContext;
 using UserAuthService.Models;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -11,6 +10,8 @@ var builder = WebApplication.CreateBuilder(args);
 // Add services to the container.
 builder.Services.Configure<MongoDbSettings>(builder.Configuration.GetSection("MongoDbSettings"));
 builder.Services.AddSingleton<MongoDbContext>();
+
+
 
 builder.Services.AddIdentity<ApplicationUser, ApplicationRole>(identityOptions =>
 {
@@ -64,6 +65,7 @@ builder.Services.AddCors(options =>
     });
 });
 
+
 builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
@@ -78,7 +80,12 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
+app.UseCors("AllowAll");
+
+app.UseAuthentication(); // This should be before UseAuthorization
 app.UseAuthorization();
+app.UseStaticFiles();
+app.UseHttpsRedirection();
 
 app.MapControllers();
 

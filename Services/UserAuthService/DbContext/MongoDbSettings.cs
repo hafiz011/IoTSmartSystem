@@ -1,4 +1,4 @@
-﻿namespace UserRoleAPI.DbContext
+﻿namespace UserAuthService.DbContext
 {
     public class MongoDbSettings
     {
