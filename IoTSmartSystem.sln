@@ -3,11 +3,6 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.8.34316.72
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "ApiGateway", "ApiGateway", "{F6694FB0-9F8E-4B68-966F-4B1F81EA462C}"
-	ProjectSection(SolutionItems) = preProject
-		program.cs = program.cs
-	EndProjectSection
-EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Services", "Services", "{F56E2BCD-07EB-4571-8D5F-71866242B239}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Shared", "Shared", "{D2A29585-D3F9-4173-A94A-65800C7F6E0A}"
@@ -20,7 +15,7 @@ Project("{888888A0-9F3D-457C-B088-3A5042F75D52}") = "Services", "Services\Servic
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "IoTSmartSystem.Shared", "Shared\IoTSmartSystem.Shared\IoTSmartSystem.Shared.csproj", "{8D4504BC-7EBF-46DC-A27B-7CCA5DFF93A1}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MqttIoTService", "Services\MqttIoTService\MqttIoTService.csproj", "{C5FD3650-1339-467B-B5E6-BACED6FE5372}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MqttIoTService", "Services\MqttIoTService\MqttIoTService.csproj", "{C5FD3650-1339-467B-B5E6-BACED6FE5372}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
