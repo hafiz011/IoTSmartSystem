@@ -1,5 +1,6 @@
 ﻿using MQTTnet;
 using MQTTnet.Client;
+using MqttSubscriberService.Models;
 using System.Text;
 using System.Text.Json;
 
@@ -8,10 +9,15 @@ public class Worker : BackgroundService
     private readonly ILogger<Worker> _logger;
     private IMqttClient _mqttClient;
     private readonly IConfiguration _configuration;
-    public Worker(ILogger<Worker> logger, IConfiguration configuration)
+    private readonly IHttpClientFactory _httpClientFactory;
+    //private readonly DeviceChecker.DeviceCheckerClient _deviceCheckerClient;
+
+    public Worker(ILogger<Worker> logger, IConfiguration configuration, IHttpClientFactory httpClientFactory /*DeviceChecker.DeviceCheckerClient deviceCheckerClient*/)
     {
         _logger = logger;
         _configuration = configuration;
+        _httpClientFactory = httpClientFactory;
+        //_deviceCheckerClient = deviceCheckerClient;
     }
 
     protected override async Task ExecuteAsync(CancellationToken stoppingToken)
@@ -33,17 +39,53 @@ public class Worker : BackgroundService
             var topic = e.ApplicationMessage.Topic;
             var payload = Encoding.UTF8.GetString(e.ApplicationMessage.Payload);
 
-            _logger.LogInformation($"Received message:\n  Topic: {topic}\n  Payload: {payload}");
+            // Expecting topic: iot/message/{deviceId}
+            var deviceId = topic.Split("/").Last();
+            if (string.IsNullOrWhiteSpace(deviceId))
+            {
+                _logger.LogWarning("Device ID is missing in topic.");
+                return;
+            }
 
-            // Optional: Forward to sensor-data service
-            await ForwardToSensorDataLoggingAsync(payload);
+            try
+            {
+                var sensorData = JsonSerializer.Deserialize<SensorDataDto>(payload);
+                if (sensorData == null)
+                {
+                    _logger.LogWarning("SensorData deserialization failed.");
+                    return;
+                }
+
+                sensorData.DeviceId = deviceId;
+                sensorData.ReceivedAt = DateTime.UtcNow;
+
+                //var deviceResponse = await _deviceCheckerClient.CheckDeviceAsync(new sensorData
+                //{
+                //    DeviceId = sensorData.DeviceId,
+                //    MacAddress = sensorData.MACAddress // Assuming this is in your payload
+                //});
+
+                //if (!deviceResponse.IsValid)
+                //{
+                //    _logger.LogWarning($"Unauthorized device: {deviceResponse.Message}");
+                //    return; // or handle as needed
+                //}
+
+                _logger.LogInformation($"Received:\n Topic: {topic}\n Payload: {payload}");
+
+                await ForwardToSensorDataLoggingAsync(sensorData);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError($"Error processing message: {ex.Message}");
+            }
         };
 
         _mqttClient.ConnectedAsync += async e =>
         {
             _logger.LogInformation("Connected to MQTT broker.");
-            await _mqttClient.SubscribeAsync("iot/message");
-            _logger.LogInformation("Subscribed to topic: iot/message");
+            await _mqttClient.SubscribeAsync("iot/message/+"); // `+` for wildcard device ID
+            _logger.LogInformation("Subscribed to topic: iot/message/+");
         };
 
         _mqttClient.DisconnectedAsync += async e =>
@@ -70,27 +112,31 @@ public class Worker : BackgroundService
         }
     }
 
-    private async Task ForwardToSensorDataLoggingAsync(string jsonPayload)
+
+    private async Task ForwardToSensorDataLoggingAsync(SensorDataDto data)
     {
         try
         {
-            // Replace this URL with your actual endpoint
-            var httpClient = new HttpClient();
-            var content = new StringContent(jsonPayload, Encoding.UTF8, "application/json");
+            var httpClient = _httpClientFactory.CreateClient();
+            //var httpClient = new HttpClient();
+            var json = JsonSerializer.Serialize(data);
+            var content = new StringContent(json, Encoding.UTF8, "application/json");
 
-            var response = await httpClient.PostAsync("http://sensordatamicroservice/api/log", content);
+            var url = _configuration["SensorDataApiUrl"]; // put in appsettings.json
+            var response = await httpClient.PostAsync($"{url}/api/log", content);
+
             if (response.IsSuccessStatusCode)
             {
-                _logger.LogInformation("Forwarded to Sensor Data Logging Service.");
+                _logger.LogInformation("Successfully forwarded sensor data.");
             }
             else
             {
-                _logger.LogWarning($"Failed to forward. Status: {response.StatusCode}");
+                _logger.LogWarning($"Forward failed: {response.StatusCode}");
             }
         }
         catch (Exception ex)
         {
-            _logger.LogError($"Error forwarding to Sensor Data Logging Service: {ex.Message}");
+            _logger.LogError($"Error forwarding sensor data: {ex.Message}");
         }
     }
 }

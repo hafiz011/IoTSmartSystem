@@ -64,7 +64,7 @@ public class Worker : BackgroundService
 
         while (!stoppingToken.IsCancellationRequested)
         {
-            string topic = "iot/message";
+            string topic = "iot/message/{deviceId}";
             var temp = 20 + random.NextDouble() * 10; // 20.0 - 30.0
             var payload = $"{{ \"temperature\": {temp:F2}, \"timestamp\": \"{DateTime.UtcNow:o}\" }}";
 

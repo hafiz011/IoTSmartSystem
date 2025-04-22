@@ -1,3 +1,4 @@
+using DeviceManagementService;
 using DeviceManagementService.DbContext;
 using DeviceManagementService.Repository.Implementation;
 using DeviceManagementService.Repository.Interface;
@@ -14,15 +15,16 @@ builder.Services.AddSingleton<IDeviceRepository, DeviceRepository>();
 builder.Services.AddSingleton<IDeviceGroupRepository, DeviceGroupRepository>();
 builder.Services.AddSingleton<IDeviceTypeRepository, DeviceTypeRepository>();
 
-
+builder.Services.AddGrpc();
 
 builder.Services.AddControllers();
-// Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
+
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
 var app = builder.Build();
 
+app.MapGrpcService<DeviceCheckerService>();
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
