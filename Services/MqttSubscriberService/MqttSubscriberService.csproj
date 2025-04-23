@@ -8,6 +8,11 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <None Remove="Protos\device.proto" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Google.Protobuf" Version="3.30.2" />
     <PackageReference Include="Grpc.Net.Client" Version="2.70.0" />
     <PackageReference Include="Grpc.Tools" Version="2.71.0">
       <PrivateAssets>all</PrivateAssets>
@@ -16,6 +21,10 @@
     <PackageReference Include="Microsoft.Extensions.Hosting" Version="8.0.0" />
     <PackageReference Include="Microsoft.Extensions.Http" Version="9.0.4" />
     <PackageReference Include="MQTTnet" Version="4.2.0.706" />
-	<Protobuf Include="../DeviceManagementService/Protos/device.proto" GrpcServices="Client" />
   </ItemGroup>
+
+	<ItemGroup>
+		<Protobuf Include="Protos\device.proto" GrpcServices="Client" />
+	</ItemGroup>
+	
 </Project>

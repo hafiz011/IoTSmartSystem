@@ -27,7 +27,7 @@ namespace DeviceManagementService.Repository.Repo
 
         public async Task CreateDeviceAsync(Device device)
         {
-            device.DeviceId = ObjectId.GenerateNewId().ToString(); // Auto generate _id if not already set
+            device.Id = ObjectId.GenerateNewId().ToString(); // Auto generate _id if not already set
             device.CreatedAt = DateTime.UtcNow;
             await _devices.InsertOneAsync(device);
         }

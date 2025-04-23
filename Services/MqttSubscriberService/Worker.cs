@@ -1,5 +1,7 @@
-﻿using MQTTnet;
+﻿using Grpc.Core;
+using MQTTnet;
 using MQTTnet.Client;
+using MqttSubscriberService;
 using MqttSubscriberService.Models;
 using System.Text;
 using System.Text.Json;
@@ -10,14 +12,12 @@ public class Worker : BackgroundService
     private IMqttClient _mqttClient;
     private readonly IConfiguration _configuration;
     private readonly IHttpClientFactory _httpClientFactory;
-    //private readonly DeviceChecker.DeviceCheckerClient _deviceCheckerClient;
 
-    public Worker(ILogger<Worker> logger, IConfiguration configuration, IHttpClientFactory httpClientFactory /*DeviceChecker.DeviceCheckerClient deviceCheckerClient*/)
+    public Worker(ILogger<Worker> logger, IConfiguration configuration, IHttpClientFactory httpClientFactory)
     {
         _logger = logger;
         _configuration = configuration;
         _httpClientFactory = httpClientFactory;
-        //_deviceCheckerClient = deviceCheckerClient;
     }
 
     protected override async Task ExecuteAsync(CancellationToken stoppingToken)
@@ -41,6 +41,7 @@ public class Worker : BackgroundService
 
             // Expecting topic: iot/message/{deviceId}
             var deviceId = topic.Split("/").Last();
+            //var deviceId = "d2876c4b-79ec-451e-a218-d578b67f951a";
             if (string.IsNullOrWhiteSpace(deviceId))
             {
                 _logger.LogWarning("Device ID is missing in topic.");
@@ -59,17 +60,14 @@ public class Worker : BackgroundService
                 sensorData.DeviceId = deviceId;
                 sensorData.ReceivedAt = DateTime.UtcNow;
 
-                //var deviceResponse = await _deviceCheckerClient.CheckDeviceAsync(new sensorData
-                //{
-                //    DeviceId = sensorData.DeviceId,
-                //    MacAddress = sensorData.MACAddress // Assuming this is in your payload
-                //});
+                var clientService = new DeviceClientService();
+                var deviceResponse = await clientService.GetDeviceInfoAsync(sensorData.DeviceId);
 
-                //if (!deviceResponse.IsValid)
-                //{
-                //    _logger.LogWarning($"Unauthorized device: {deviceResponse.Message}");
-                //    return; // or handle as needed
-                //}
+                if (deviceResponse == null)
+                {
+                    _logger.LogWarning($"Unauthorized device: {sensorData.DeviceId}");
+                    return;
+                }
 
                 _logger.LogInformation($"Received:\n Topic: {topic}\n Payload: {payload}");
 

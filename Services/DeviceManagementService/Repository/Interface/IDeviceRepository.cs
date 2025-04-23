@@ -5,11 +5,11 @@ namespace DeviceManagementService.Repository.Interface
 {
     public interface IDeviceRepository
     {
-        Task CreateDeviceAsync(Device group);
+        Task CreateDeviceAsync(Device device);
         Task<List<Device>> GetAllDeviceAsync();
-        Task<Device> GetDeviceByIdAsync(string groupId);
-        Task UpdateDeviceAsync(Device group);
-        Task DeleteDeviceAsync(string groupId);
+        Task<Device> GetDeviceByIdAsync(string deviceId);
+        Task UpdateDeviceAsync(Device device);
+        Task DeleteDeviceAsync(string deviceId);
 
 
     }

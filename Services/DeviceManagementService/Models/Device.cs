@@ -7,6 +7,7 @@ namespace DeviceManagementService.Models
     public class Device 
     {
         [BsonId]
+        public string Id { get; set; }
         public string DeviceId { get; set; }
         public string MACAddress { get; set; }
         public string Name { get; set; }

@@ -1,0 +1,18 @@
+syntax = "proto3";
+
+option csharp_namespace = "DeviceManagementService";
+package device;
+
+service DeviceService {
+  rpc GetDeviceInfo (DeviceRequest) returns (DeviceResponse);
+}
+
+message DeviceRequest {
+  string deviceid = 1;
+}
+
+message DeviceResponse {
+  string deviceid = 1;
+  string macaddress = 2;
+  string status = 3;
+}
