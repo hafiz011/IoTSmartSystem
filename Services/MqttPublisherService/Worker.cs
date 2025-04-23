@@ -39,7 +39,7 @@ public class Worker : BackgroundService
         _mqttClient.DisconnectedAsync += async e =>
         {
             _logger.LogWarning("Disconnected from MQTT broker.");
-            await Task.Delay(TimeSpan.FromSeconds(5));
+            await Task.Delay(TimeSpan.FromSeconds(3));
             try
             {
                 await _mqttClient.ConnectAsync(_options, stoppingToken);
@@ -64,7 +64,7 @@ public class Worker : BackgroundService
 
         while (!stoppingToken.IsCancellationRequested)
         {
-            string topic = "iot/message/{deviceId}";
+            string topic = "iot/message/d2876c4b-79ec-451e-a218-d578b67f951a";
             var temp = 20 + random.NextDouble() * 10; // 20.0 - 30.0
             var payload = $"{{ \"temperature\": {temp:F2}, \"timestamp\": \"{DateTime.UtcNow:o}\" }}";
 
