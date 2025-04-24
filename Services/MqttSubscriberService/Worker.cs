@@ -1,6 +1,7 @@
 ﻿using Grpc.Core;
 using MQTTnet;
 using MQTTnet.Client;
+using MQTTnet.Server;
 using MqttSubscriberService;
 using MqttSubscriberService.Models;
 using System.Text;
@@ -12,12 +13,16 @@ public class Worker : BackgroundService
     private IMqttClient _mqttClient;
     private readonly IConfiguration _configuration;
     private readonly IHttpClientFactory _httpClientFactory;
+    private readonly RabbitMqPublisher _publisher;
 
     public Worker(ILogger<Worker> logger, IConfiguration configuration, IHttpClientFactory httpClientFactory)
     {
         _logger = logger;
         _configuration = configuration;
         _httpClientFactory = httpClientFactory;
+
+        var rmq = configuration.GetSection("RabbitMQ");
+        _publisher = new RabbitMqPublisher(rmq["Host"], rmq["Queue"]);
     }
 
     protected override async Task ExecuteAsync(CancellationToken stoppingToken)
@@ -110,31 +115,49 @@ public class Worker : BackgroundService
         }
     }
 
-
     private async Task ForwardToSensorDataLoggingAsync(SensorDataDto data)
     {
         try
         {
-            var httpClient = _httpClientFactory.CreateClient();
-            //var httpClient = new HttpClient();
-            var json = JsonSerializer.Serialize(data);
-            var content = new StringContent(json, Encoding.UTF8, "application/json");
-
-            var url = _configuration["SensorDataApiUrl"]; // put in appsettings.json
-            var response = await httpClient.PostAsync($"{url}/api/log", content);
-
-            if (response.IsSuccessStatusCode)
-            {
-                _logger.LogInformation("Successfully forwarded sensor data.");
-            }
-            else
-            {
-                _logger.LogWarning($"Forward failed: {response.StatusCode}");
-            }
+            var messageJson = JsonSerializer.Serialize(data);
+            _publisher.Publish(messageJson); // Publish to RabbitMQ queue
+            _logger.LogInformation("Published to RabbitMQ.");
         }
         catch (Exception ex)
         {
-            _logger.LogError($"Error forwarding sensor data: {ex.Message}");
+            _logger.LogError($"Failed to publish to RabbitMQ: {ex.Message}");
         }
+
+        await Task.CompletedTask;
     }
+
+
+
+    //private async Task ForwardToSensorDataLoggingAsync(SensorDataDto data)
+    //{
+    //    try
+    //    {
+    //        var httpClient = _httpClientFactory.CreateClient();
+    //        //var httpClient = new HttpClient();
+    //        var json = JsonSerializer.Serialize(data);
+    //        var content = new StringContent(json, Encoding.UTF8, "application/json");
+
+    //        var url = _configuration["SensorDataApiUrl"]; // put in appsettings.json
+    //        //var response = await httpClient.PostAsync($"{url}/api/log", content);
+    //        var response = await httpClient.ConnectAsync(mqttOptions, CancellationToken.None);
+
+    //        if (response.IsSuccessStatusCode)
+    //        {
+    //            _logger.LogInformation("Successfully forwarded sensor data.");
+    //        }
+    //        else
+    //        {
+    //            _logger.LogWarning($"Forward failed: {response.StatusCode}");
+    //        }
+    //    }
+    //    catch (Exception ex)
+    //    {
+    //        _logger.LogError($"Error forwarding sensor data: {ex.Message}");
+    //    }
+    //}
 }
