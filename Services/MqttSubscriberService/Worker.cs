@@ -13,16 +13,12 @@ public class Worker : BackgroundService
     private IMqttClient _mqttClient;
     private readonly IConfiguration _configuration;
     private readonly IHttpClientFactory _httpClientFactory;
-    private readonly RabbitMqPublisher _publisher;
 
     public Worker(ILogger<Worker> logger, IConfiguration configuration, IHttpClientFactory httpClientFactory)
     {
         _logger = logger;
         _configuration = configuration;
         _httpClientFactory = httpClientFactory;
-
-        var rmq = configuration.GetSection("RabbitMQ");
-        _publisher = new RabbitMqPublisher(rmq["Host"], rmq["Queue"]);
     }
 
     protected override async Task ExecuteAsync(CancellationToken stoppingToken)
@@ -65,14 +61,14 @@ public class Worker : BackgroundService
                 sensorData.DeviceId = deviceId;
                 sensorData.ReceivedAt = DateTime.UtcNow;
 
-                var clientService = new DeviceClientService();
-                var deviceResponse = await clientService.GetDeviceInfoAsync(sensorData.DeviceId);
+                //var clientService = new DeviceClientService();
+                //var deviceResponse = await clientService.GetDeviceInfoAsync(sensorData.DeviceId);
 
-                if (deviceResponse == null)
-                {
-                    _logger.LogWarning($"Unauthorized device: {sensorData.DeviceId}");
-                    return;
-                }
+                //if (deviceResponse == null)
+                //{
+                //    _logger.LogWarning($"Unauthorized device: {sensorData.DeviceId}");
+                //    return;
+                //}
 
                 _logger.LogInformation($"Received:\n Topic: {topic}\n Payload: {payload}");
 
@@ -120,7 +116,7 @@ public class Worker : BackgroundService
         try
         {
             var messageJson = JsonSerializer.Serialize(data);
-            _publisher.Publish(messageJson); // Publish to RabbitMQ queue
+            //_publisher.Publish(messageJson); // Publish to RabbitMQ queue
             _logger.LogInformation("Published to RabbitMQ.");
         }
         catch (Exception ex)

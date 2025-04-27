@@ -1,0 +1,21 @@
+syntax = "proto3";
+
+option csharp_namespace = "SensorDataLoggingService";
+
+package sensor;
+
+service SensorDataLogger {
+  rpc LogSensorData (SensorDataRequest) returns (LogSensorDataResponse);
+}
+
+message SensorDataRequest {
+  string deviceId = 1;
+  string receivedAt = 2;
+  float value = 3;
+  float type = 4;
+}
+
+message LogSensorDataResponse {
+  bool success = 1;
+  string message = 2;
+}

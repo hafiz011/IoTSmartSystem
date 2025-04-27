@@ -1,4 +1,3 @@
-using SensorDataLoggingService;
 using SensorDataLoggingService.DbContext;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -8,7 +7,6 @@ builder.Services.Configure<MongoDbSettings>(builder.Configuration.GetSection("Mo
 
 builder.Services.AddSingleton<MongoDbContext>();
 
-builder.Services.AddHostedService<RabbitMqConsumer>();
 
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
