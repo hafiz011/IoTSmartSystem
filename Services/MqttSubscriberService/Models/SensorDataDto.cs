@@ -9,8 +9,8 @@ namespace MqttSubscriberService.Models
     public class SensorDataDto
     {
         public string DeviceId { get; set; }
-        public double Value { get; set; } // e.g., temperature or humidity
-        public string Type { get; set; }  // e.g., "temperature"
-        public DateTime ReceivedAt { get; set; }
+        public double Value { get; set; }
+        public string Type { get; set; }
+        public string ReceivedAt { get; set; }
     }
 }

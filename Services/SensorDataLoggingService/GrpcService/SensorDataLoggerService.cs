@@ -1,7 +1,8 @@
 ﻿using Grpc.Core;
-using Sensor; // your generated code from proto
+using Grpc.Net.Client;
+using SensorDataLoggingService.Models;
 
-namespace SensorDataLoggingService.Services
+namespace SensorDataLoggingService.GrpcService
 {
     public class SensorDataLoggerService : SensorDataLogger.SensorDataLoggerBase
     {
@@ -56,13 +57,14 @@ namespace SensorDataLoggingService.Services
             try
             {
                 using var channel = Grpc.Net.Client.GrpcChannel.ForAddress(_configuration["OtherGrpcService:Url"]);
-                var client = new AnotherService.AnotherServiceClient(channel);
+                var client = new SensorDataLoggerService.SensorDataLoggerServiceClient(channel);
+
 
                 var forwardRequest = new ForwardSensorDataRequest
                 {
                     DeviceId = data.DeviceId,
-                    Temperature = data.Temperature,
-                    Humidity = data.Humidity,
+                    Value = data.Value,
+                    Type = data.Type,
                     ReceivedAt = data.ReceivedAt
                 };
 
@@ -76,5 +78,6 @@ namespace SensorDataLoggingService.Services
                 return false;
             }
         }
+
     }
 }
