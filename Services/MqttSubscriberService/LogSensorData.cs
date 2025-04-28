@@ -5,12 +5,11 @@ namespace MqttSubscriberService
 {
     public class LogSensorData
     {
-        public async Task<LogSensorDataResponse> SensorData(SensorDataRequest data)
+        public async Task<LogSensorDataResponse> SensorData(SensorDataDto data)
         {
-            try
-            {
-                using var channel = GrpcChannel.ForAddress("https://localhost:5007"); // URL of DeviceManagementService
-                var client = new SensorDataLoggingService.SensorDataLoggerServiceClient(channel);
+
+                using var channel = GrpcChannel.ForAddress("https://localhost:5007");
+                var client = new SensorDataLoggingService.SensorDataLoggerService.LogSensorDataC(channel);
 
                 var forwardRequest = new SensorDataDto
                 {
@@ -20,14 +19,10 @@ namespace MqttSubscriberService
                     ReceivedAt = data.ReceivedAt
                 };
 
-                var response = await client.SaveForwardedSensorDataAsync(forwardRequest);
+                var response = await client.LogSensorData(forwardRequest);
 
                 return response.Success;
-            }
-            catch (Exception ex)
-            {
-                return false;
-            }
+            
         }
     }
 }

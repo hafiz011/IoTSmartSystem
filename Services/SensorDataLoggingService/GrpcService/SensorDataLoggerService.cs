@@ -1,6 +1,5 @@
 ﻿using Grpc.Core;
 using Grpc.Net.Client;
-using SensorDataLoggingService.Models;
 
 namespace SensorDataLoggingService.GrpcService
 {
