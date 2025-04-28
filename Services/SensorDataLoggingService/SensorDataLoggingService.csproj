@@ -8,6 +8,7 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <None Remove="Protos\device.proto" />
     <None Remove="Protos\sensor_data.proto" />
   </ItemGroup>
 
@@ -28,6 +29,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Protobuf Include="Protos\device.proto" GrpcServices="Server" />
     <Protobuf Include="Protos\sensor_data.proto" />
   </ItemGroup>
 

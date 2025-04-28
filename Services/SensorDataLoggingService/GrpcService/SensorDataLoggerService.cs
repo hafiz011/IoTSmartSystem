@@ -56,8 +56,7 @@ namespace SensorDataLoggingService.GrpcService
             try
             {
                 using var channel = Grpc.Net.Client.GrpcChannel.ForAddress(_configuration["OtherGrpcService:Url"]);
-                var client = new SensorDataLoggerService.SensorDataLoggerServiceClient(channel);
-
+                var client = new SensorDataLogger.SensorDataLoggerClient(channel);
 
                 var forwardRequest = new ForwardSensorDataRequest
                 {
@@ -67,7 +66,7 @@ namespace SensorDataLoggingService.GrpcService
                     ReceivedAt = data.ReceivedAt
                 };
 
-                var response = await client.SaveForwardedSensorDataAsync(forwardRequest);
+                var response = await client.AIservice(forwardRequest);
 
                 return response.Success;
             }
