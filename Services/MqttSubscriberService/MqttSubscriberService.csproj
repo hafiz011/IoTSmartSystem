@@ -8,7 +8,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <None Remove="Protos\device.proto" />
+    <None Remove="Protos\sensor_data.proto" />
   </ItemGroup>
 
   <ItemGroup>
@@ -23,8 +23,8 @@
     <PackageReference Include="MQTTnet" Version="4.2.0.706" />
   </ItemGroup>
 
-	<ItemGroup>
-		<Protobuf Include="Protos\device.proto" GrpcServices="Client" />
-	</ItemGroup>
+  <ItemGroup>
+    <Protobuf Include="Protos\sensor_data.proto" GrpcServices="Client" />
+  </ItemGroup>
 	
 </Project>

@@ -9,10 +9,10 @@ service SensorDataLogger {
 }
 
 message SensorDataRequest {
-  string DeviceId = 1;
-  string ReceivedAt = 2;
-  string Value = 3;
-  string Type = 4;
+  string deviceId = 1;
+  string receivedAt = 2;
+  string value = 3;
+  string type = 4;
 }
 
 message LogSensorDataResponse {

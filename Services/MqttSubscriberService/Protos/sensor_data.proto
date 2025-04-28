@@ -11,8 +11,8 @@ service SensorDataLogger {
 message SensorDataRequest {
   string deviceId = 1;
   string receivedAt = 2;
-  float value = 3;
-  float type = 4;
+  string value = 3;
+  string type = 4;
 }
 
 message LogSensorDataResponse {
