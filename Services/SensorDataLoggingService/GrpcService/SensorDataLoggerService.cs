@@ -1,5 +1,7 @@
 ﻿using Grpc.Core;
 using Grpc.Net.Client;
+using SensorDataLoggingService.Models;
+using SensorDataLoggingService.Service.Interface;
 
 namespace SensorDataLoggingService.GrpcService
 {
@@ -7,19 +9,71 @@ namespace SensorDataLoggingService.GrpcService
     {
         private readonly ILogger<SensorDataLoggerService> _logger;
         private readonly IConfiguration _configuration;
+        private readonly ITemperatureSensorDataRepository _temperatureSensorDataRepository;
+        private readonly ILightSensorDataRepository _lightSensorDataRepository;
+        private readonly IMotionSensorDataRepository _motionSensorDataRepository;
 
-        public SensorDataLoggerService(ILogger<SensorDataLoggerService> logger, IConfiguration configuration)
+        public SensorDataLoggerService(ILogger<SensorDataLoggerService> logger,
+            IConfiguration configuration,
+            ITemperatureSensorDataRepository temperatureSensorDataRepository,
+            ILightSensorDataRepository lightSensorDataRepository,
+            IMotionSensorDataRepository motionSensorDataRepository)
         {
             _logger = logger;
             _configuration = configuration;
+            _lightSensorDataRepository = lightSensorDataRepository;
+            _motionSensorDataRepository = motionSensorDataRepository;
+            _temperatureSensorDataRepository = temperatureSensorDataRepository;
         }
 
         public override async Task<LogSensorDataResponse> LogSensorData(SensorDataRequest request, ServerCallContext context)
         {
-            _logger.LogInformation($"Received Sensor Data:\n DeviceId: {request.DeviceId}\n Value: {request.Value}\n Type: {request.Type}\n ReceivedAt: {request.ReceivedAt}");
+           
 
             try
             {
+
+                switch (request.Type.ToLower())
+                {
+                    case "temperature":
+                        var tempData = new TemperatureSensorData
+                        {
+                            DeviceId = request.DeviceId,
+                            Value = double.Parse(request.Value),
+                            Timestamp = DateTime.UtcNow
+                        };
+                        await _temperatureSensorDataRepository.CreateAsync(tempData);
+                        break;
+
+                    case "light":
+                        var lightData = new LightSensorData
+                        {
+                            DeviceId = request.DeviceId,
+                            Value = double.Parse(request.Value),
+                            Timestamp = DateTime.UtcNow
+                        };
+                        await _lightSensorDataRepository.CreateAsync(lightData);
+                        break;
+
+                    case "motion":
+                        var motionData = new MotionSensorData
+                        {
+                            DeviceId = request.DeviceId,
+                            Value = bool.Parse(request.Value),
+                            Timestamp = DateTime.UtcNow
+                        };
+                        await _motionSensorDataRepository.CreateAsync(motionData);
+                        break;
+
+                    default:
+                       _logger.LogError($"Fail to store Sensor Data:\n DeviceId: {request.DeviceId}\n Value: {request.Value}\n Type: {request.Type}\n ReceivedAt: {request.ReceivedAt = DateTime.UtcNow.ToString()}");
+                        return new LogSensorDataResponse
+                        {
+                            Success = false,
+                            Message = $"Sensor type '{request.Type}' is not supported."
+                        };
+                }
+
                 // Now act as gRPC Client to forward this data to another service
                 var forwardResult = await ForwardSensorDataToOtherServiceAsync(request);
 
