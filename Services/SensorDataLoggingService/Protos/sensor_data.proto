@@ -6,6 +6,9 @@ package sensor;
 
 service SensorDataLogger {
   rpc LogSensorData (SensorDataRequest) returns (LogSensorDataResponse);
+  rpc ForwardSensorData (ForwardDataRequest) returns (ForwardDataResponse);
+
+
 }
 
 message SensorDataRequest {
@@ -16,6 +19,18 @@ message SensorDataRequest {
 }
 
 message LogSensorDataResponse {
+  bool success = 1;
+  string message = 2;
+}
+
+message ForwardDataRequest {
+  string deviceId = 1;
+  string receivedAt = 2;
+  string value = 3;
+  string type = 4;
+}
+
+message ForwardDataResponse {
   bool success = 1;
   string message = 2;
 }

@@ -105,14 +105,14 @@ namespace SensorDataLoggingService.GrpcService
             }
         }
 
-        private async Task<bool> ForwardSensorDataToOtherServiceAsync(SensorDataRequest data)
+       private async Task<bool> ForwardSensorDataToOtherServiceAsync(SensorDataRequest data)
         {
             try
             {
-                using var channel = Grpc.Net.Client.GrpcChannel.ForAddress(_configuration["OtherGrpcService:Url"]);
+                using var channel = GrpcChannel.ForAddress(_configuration["OtherGrpcService:Url"]);
                 var client = new SensorDataLogger.SensorDataLoggerClient(channel);
 
-                var forwardRequest = new ForwardSensorDataRequest
+                var forwardRequest = new ForwardDataRequest
                 {
                     DeviceId = data.DeviceId,
                     Value = data.Value,
@@ -120,8 +120,7 @@ namespace SensorDataLoggingService.GrpcService
                     ReceivedAt = data.ReceivedAt
                 };
 
-                var response = await client.AIservice(forwardRequest);
-
+                var response = await client.ForwardSensorDataAsync(forwardRequest);
                 return response.Success;
             }
             catch (Exception ex)

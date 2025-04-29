@@ -1,4 +1,6 @@
 using SensorDataLoggingService.DbContext;
+using SensorDataLoggingService.Service.Interface;
+using SensorDataLoggingService.Service.Repository;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -6,6 +8,11 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.Configure<MongoDbSettings>(builder.Configuration.GetSection("MongoDbSettings"));
 
 builder.Services.AddSingleton<MongoDbContext>();
+
+
+builder.Services.AddSingleton<ILightSensorDataRepository, LightSensorDataRepository>();
+builder.Services.AddSingleton<IMotionSensorDataRepository, MotionSensorDataRepository>();
+builder.Services.AddSingleton<ITemperatureSensorDataRepository, TemperatureSensorDataRepository>();
 
 
 builder.Services.AddControllers();
