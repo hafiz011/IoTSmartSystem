@@ -1,5 +1,6 @@
 ﻿using Microsoft.Extensions.Options;
 using MongoDB.Driver;
+using SensorDataLoggingService.Models;
 namespace SensorDataLoggingService.DbContext
 {
     public class MongoDbContext
@@ -13,9 +14,10 @@ namespace SensorDataLoggingService.DbContext
         }
 
 
-        //public IMongoCollection<SensorLog> Devices => _database.GetCollection<SensorLog>("Devices");
-        //public IMongoCollection<SensorLog> DeviceGroups => _database.GetCollection<SensorLog>("Groups");
-        //public IMongoCollection<DeviceType> DeviceType => _database.GetCollection<DeviceType>("Device_Types");
+        public IMongoCollection<LightSensorData> LightSensorData => _database.GetCollection<LightSensorData>("LightSensorData");
+        public IMongoCollection<TemperatureSensorData> TemperatureSensorData => _database.GetCollection<TemperatureSensorData>("TemperatureSensorData");
+        public IMongoCollection<MotionSensorData> MotionSensorData => _database.GetCollection<MotionSensorData>("MotionSensorData");
+        
 
     }
 
