@@ -109,7 +109,7 @@ namespace SensorDataLoggingService.GrpcService
         {
             try
             {
-                using var channel = GrpcChannel.ForAddress(_configuration["OtherGrpcService:Url"]);
+                using var channel = GrpcChannel.ForAddress(_configuration["AIService:Url"]);
                 var client = new SensorDataLogger.SensorDataLoggerClient(channel);
 
                 var forwardRequest = new ForwardDataRequest
