@@ -23,6 +23,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MqttPublisherService", "Ser
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SensorDataLoggingService", "Services\SensorDataLoggingService\SensorDataLoggingService.csproj", "{671BC8AE-C065-448E-90DA-906790103470}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ControllerService", "Services\ControllerService\ControllerService.csproj", "{05B9197B-4756-4473-BF31-DC52891CE5E3}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -59,6 +61,10 @@ Global
 		{671BC8AE-C065-448E-90DA-906790103470}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{671BC8AE-C065-448E-90DA-906790103470}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{671BC8AE-C065-448E-90DA-906790103470}.Release|Any CPU.Build.0 = Release|Any CPU
+		{05B9197B-4756-4473-BF31-DC52891CE5E3}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{05B9197B-4756-4473-BF31-DC52891CE5E3}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{05B9197B-4756-4473-BF31-DC52891CE5E3}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{05B9197B-4756-4473-BF31-DC52891CE5E3}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -72,6 +78,7 @@ Global
 		{CFE7D052-F8D4-4296-BCF5-B1DE92C3196A} = {F56E2BCD-07EB-4571-8D5F-71866242B239}
 		{06A4BEC0-857B-4462-9731-3715E27E20F1} = {F56E2BCD-07EB-4571-8D5F-71866242B239}
 		{671BC8AE-C065-448E-90DA-906790103470} = {F56E2BCD-07EB-4571-8D5F-71866242B239}
+		{05B9197B-4756-4473-BF31-DC52891CE5E3} = {F56E2BCD-07EB-4571-8D5F-71866242B239}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {AC84D9EE-7546-4D8F-8D0A-C7571C7EBF63}
