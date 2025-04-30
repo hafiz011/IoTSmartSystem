@@ -70,7 +70,7 @@ namespace ControllerService.Controllers
             };
             await _deviceStatusRepository.AddHistoryAsync(history);
 
-            return Ok(new { message = "Device output updated successfully." });
+            return Ok(new { message = "Device status output updated successfully." });
         }
     }
 
